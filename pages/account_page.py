@@ -1,10 +1,6 @@
-from locators.login_page_locators import LoginPageLocators
 from pages.base_page import BasePage
 import allure
-from selenium.webdriver import Keys
 from locators.account_page_locators import AccountPageLocators
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
 
 
 class AccountPage(BasePage):
@@ -19,9 +15,14 @@ class AccountPage(BasePage):
     def logout(self):
         with allure.step("Выходим из аккаунта"):
             self.push_element(AccountPageLocators.LOGOUT_BUTTON)
-            self.wait_visibility(LoginPageLocators.EMAIL_FIELD)
+            self.wait_invisibility(AccountPageLocators.NAME_FIELD)
 
-    def go_to_restore_password(self):
-        with allure.step("Переходим в восстановление пароля"):
-            self.push_element(LoginPageLocators.RESTORE_PASSWORD_LINK)
-            self.wait_visibility(LoginPageLocators.RESTORE_PASSWORD_HEADER)
+    def get_name(self):
+        return self.get_element_attribute(AccountPageLocators.NAME_FIELD, "value")
+    
+    def get_login(self):
+        return self.get_element_attribute(AccountPageLocators.LOGIN_FIELD, "value")
+    
+    def wait_load_account(self):
+        with allure.step("Дожидаемся загрузки страницы Аккаунт"):
+            self.wait_visibility(AccountPageLocators.NAME_FIELD)

@@ -21,10 +21,10 @@ class TestRestorePassword:
     )
     def test_follow_to_restore_password(self, driver):
         main_page = MainPage(driver)
+        login_page = LoginPage(driver)
         main_page.go_to_login_form()
         account_page = AccountPage(driver)
-        account_page.go_to_restore_password()
-
+        login_page.go_to_restore_password()
         with allure.step(
             "Проверяем, что произошел переход на страницу восстановления пароля по кнопке «Восстановить "
             "пароль»"
@@ -40,17 +40,11 @@ class TestRestorePassword:
     )
     def test_follow_to_reset_password(self, driver, create_and_delete_user):
         main_page = MainPage(driver)
-        main_page.go_to_login_form()
-        account_page = AccountPage(driver)
-        account_page.go_to_restore_password()
         login_page = LoginPage(driver)
-        with allure.step("Вводим в поле ввода Емейла почту пользователя"):
-            login_page.send_keys(
-                LoginPageLocators.INPUT_EMAIL_INPUT, create_and_delete_user["email"]
-            )
-        with allure.step("Нажимаем кнопку Восстановить"):
-            login_page.push_element(LoginPageLocators.RESTORE_PASSWORD_BUTTON)
-            login_page.wait_visibility(LoginPageLocators.INPUT_CODE_LABEL)
+        main_page.go_to_login_form()
+        login_page.go_to_restore_password()
+        login_page.fill_email_to_restore_pass(create_and_delete_user["email"])
+        login_page.push_restore_pass()
         with allure.step(
             "Проверяем, что произошел переход на страницу ввода кода из письма"
         ):
@@ -65,25 +59,18 @@ class TestRestorePassword:
     )
     def test_reset_password_field_flash(self, driver, create_and_delete_user):
         main_page = MainPage(driver)
-        main_page.go_to_login_form()
-        account_page = AccountPage(driver)
-        account_page.go_to_restore_password()
         login_page = LoginPage(driver)
-        with allure.step("Вводим в поле ввода Емейла почту пользователя"):
-            login_page.send_keys(
-                LoginPageLocators.INPUT_EMAIL_INPUT, create_and_delete_user["email"]
-            )
-        with allure.step("Нажимаем кнопку Восстановить"):
-            login_page.push_element(LoginPageLocators.RESTORE_PASSWORD_BUTTON)
-            login_page.wait_visibility(LoginPageLocators.INPUT_CODE_LABEL)
+        main_page.go_to_login_form()
+        login_page.go_to_restore_password()
+        login_page.fill_email_to_restore_pass(create_and_delete_user["email"])
+        login_page.push_restore_pass()
         with allure.step(
             "Проверяем, что у контейнера поля ввода 'Пароль' отсутствует подсветка"
         ):
             assert "input_status_active" not in login_page.get_element_attribute(
                 LoginPageLocators.PASSWORD_CONTAINER, "class"
             )
-        with allure.step("Нажимаем на кнопку показать/скрыть пароль"):
-            login_page.click_element(LoginPageLocators.HIDE_SHOW_BUTTON)
+        login_page.click_show_hide_pass()
         with allure.step(
             "Проверяем, что клик по кнопке показать/скрыть пароль делает поле активным — подсвечивает его"
         ):

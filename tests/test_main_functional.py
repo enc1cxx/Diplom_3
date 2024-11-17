@@ -1,9 +1,12 @@
+import time
 import allure
 from locators.main_page_locators import MainPageLocators
 from locators.constructor_page_locators import ConstructorPageLocators
+from locators.orders_page_locators import OrderPageLocators
 from pages.constructor_page import ConstructorPage
 from pages.login_page import LoginPage
 from pages.main_page import MainPage
+from pages.order_feed_page import OrderFeedPage
 
 
 @allure.epic("Stellar Burger")
@@ -25,8 +28,10 @@ class TestMainFunctional:
     def test_follow_to_order_feed(self, driver):
         main_page = MainPage(driver)
         main_page.go_to_order_feed()
+        order_page = OrderFeedPage(driver)
+        order_page.wait_load_order_page()
         with allure.step("Проверяем, что произошел переход в ленту заказов"):
-            assert main_page.is_displayed(MainPageLocators.ORDER_FEED_HEADER)
+            assert main_page.is_displayed(OrderPageLocators.ORDER_FEED_HEADER)
 
     @allure.title("Отображение модалки с информацией об ингредиенте")
     @allure.description(
@@ -87,6 +92,8 @@ class TestMainFunctional:
         "заказа"
     )
     def test_create_order(self, driver, create_and_delete_user):
+        main_page = MainPage(driver)
+        main_page.go_to_login_form()
         login_page = LoginPage(driver)
         login_page.login(
             create_and_delete_user["email"], create_and_delete_user["password"]

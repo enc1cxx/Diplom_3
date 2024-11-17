@@ -30,3 +30,7 @@ class OrderPageLocators:
         By.XPATH,
         '//li[@class="text text_type_main-small" and contains(text(), "Все текущие заказы готовы!")]',
     ]  # Лейбл "Все текущие заказы готовы!"
+    ORDER_FEED_HEADER = [
+        By.XPATH,
+        '//h1[text()="Лента заказов"]',
+    ]  #'Заголовок раздела "Лента заказов"
